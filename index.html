@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PathoTrack - Community Infection Detection and Awareness</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0066cc;
+            --primary-green: #00a366;
+            --light-blue: #e6f2ff;
+            --light-green: #e6f9f0;
+            --dark-gray: #1a1a1a;
+            --light-gray: #f5f5f5;
+            --border-color: #ddd;
+            --success-green: #28a745;
+            --warning-orange: #ff9800;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: #fff;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-green) 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-green) 100%);
+            padding: 4rem 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        button, .btn {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0052a3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #008a52;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 163, 102, 0.3);
+        }
+
+        .section {
+            padding: 3rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .form-section {
+            background-color: var(--light-gray);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"],
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+        }
+
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+            accent-color: var(--primary-blue);
+        }
+
+        input[type="radio"] {
+            cursor: pointer;
+            accent-color: var(--primary-green);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .alert {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .alert.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tip-card {
+            background: white;
+            border: 2px solid var(--light-blue);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.15);
+            border-color: var(--primary-blue);
+        }
+
+        .tip-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tip-card h3 {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .tip-card p {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            background-color: var(--dark-gray);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            nav {
+                display: none;
+                gap: 1rem;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary-blue);
+                flex-direction: column;
+                padding: 1rem;
+                align-items: flex-start;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button, .btn {
+                width: 100%;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1rem;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+            }
+
+            .section {
+                padding: 2rem 0.75rem;
+            }
+
+            .header-container {
+                flex-wrap: wrap;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">🏥 PathoTrack</div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <nav id="navMenu">
+                <a onclick="scrollToSection('home')">Home</a>
+                <a onclick="scrollToSection('symptoms')">Check Symptoms</a>
+                <a onclick="scrollToSection('report')">Report Symptoms</a>
+                <a onclick="scrollToSection('tips')">Health Tips</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Home Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>PathoTrack</h1>
+            <p class="subtitle">Community Infection Detection and Awareness</p>
+            <p>PathoTrack helps communities report symptoms, learn about infections, and find nearby laboratories for testing.</p>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="scrollToSection('symptoms')">Check Symptoms</button>
+                <button class="btn btn-secondary" onclick="scrollToSection('report')">Report Symptoms</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Symptom Checker Section -->
+    <section class="section" id="symptoms">
+        <div class="container">
+            <h2>Symptom Checker</h2>
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Select your symptoms:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fever" value="Fever">
+                            <label for="fever" style="margin-bottom: 0;">Fever</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="abdominal" value="Abdominal pain">
+                            <label for="abdominal" style="margin-bottom: 0;">Abdominal pain</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="diarrhea" value="Diarrhea">
+                            <label for="diarrhea" style="margin-bottom: 0;">Diarrhea</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rash" value="Rash">
+                            <label for="rash" style="margin-bottom: 0;">Rash</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="vomiting" value="Vomiting">
+                            <label for="vomiting" style="margin-bottom: 0;">Vomiting</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="urination" value="Painful urination">
+                            <label for="urination" style="margin-bottom: 0;">Painful urination</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="checkSymptoms()">Check</button>
+                <div id="symptomResult" class="alert"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Report Symptoms Section -->
+    <section class="section" id="report">
+        <div class="container">
+            <h2>Report Your Symptoms</h2>
+            <div class="form-section">
+                <form id="reportForm" onsubmit="submitReport(event)">
+                    <div class="form-group">
+                        <label for="ageRange">Age Range:</label>
+                        <select id="ageRange" required>
+                            <option value="">Select age range</option>
+                            <option value="0-12">0-12 years</option>
+                            <option value="13-18">13-18 years</option>
+                            <option value="19-35">19-35 years</option>
+                            <option value="36-50">36-50 years</option>
+                            <option value="50+">50+ years</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender:</label>
+                        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                            <div class="checkbox-item">
+                                <input type="radio" id="male" name="gender" value="Male" required>
+                                <label for="male" style="margin-bottom: 0;">Male</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="female" name="gender" value="Female">
+                                <label for="female" style="margin-bottom: 0;">Female</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="other" name="gender" value="Other">
+                                <label for="other" style="margin-bottom: 0;">Other</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="symptoms">Symptoms (describe):</label>
+                        <textarea id="symptoms" placeholder="Describe your symptoms..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">Duration of symptoms:</label>
+                        <input type="text" id="duration" placeholder="e.g., 2 days, 1 week" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <input type="text" id="location" placeholder="Your city or region" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary" style="width: 100%;">Submit Report</button>
+                </form>
+                <div id="reportResult" class="alert"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Health Tips Section -->
+    <section class="section" id="tips">
+        <div class="container">
+            <h2>Health Tips</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-card-icon">🧼</div>
+                    <h3>Wash Hands Regularly</h3>
+                    <p>Wash your hands with soap and water for at least 20 seconds, especially before eating and after using the bathroom.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-card-icon">💧</div>
+                    <h3>Drink Clean Water</h3>
+                    <p>Always drink clean, filtered, or boiled water to prevent waterborne infections and diseases.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-card-icon">⚠️</div>
+                    <h3>Avoid Self-Medication</h3>
+                    <p>Do not self-medicate. Consult a healthcare professional before taking any medications.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-card-icon">🍎</div>
+                    <h3>Practice Food Hygiene</h3>
+                    <p>Store food properly, cook at appropriate temperatures, and avoid eating expired or contaminated food.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-card-icon">😷</div>
+                    <h3>Maintain Hygiene</h3>
+                    <p>Cover your mouth and nose when coughing or sneezing to prevent the spread of infections.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-card-icon">🏥</div>
+                    <h3>Seek Medical Help</h3>
+                    <p>If symptoms persist or worsen, seek medical help from a qualified healthcare provider immediately.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>PathoTrack © 2026 – Community Health Awareness</p>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        menuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll to sections
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Check Symptoms Function
+        function checkSymptoms() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const selectedSymptoms = [];
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedSymptoms.push(checkbox.value);
+                }
+            });
+
+            const resultDiv = document.getElementById('symptomResult');
+
+            if (selectedSymptoms.length === 0) {
+                resultDiv.className = 'alert warning';
+                resultDiv.textContent = 'Please select at least one symptom to check.';
+            } else {
+                resultDiv.className = 'alert warning';
+                resultDiv.innerHTML = `<strong>Symptoms Reported:</strong> ${selectedSymptoms.join(', ')}<br><br><strong>⚠️ Possible infection detected.</strong> Please visit a medical laboratory for testing.`;
+            }
+
+            // Clear the alert after 6 seconds
+            setTimeout(() => {
+                resultDiv.className = 'alert';
+            }, 6000);
+        }
+
+        // Submit Report Function
+        function submitReport(event) {
+            event.preventDefault();
+
+            const ageRange = document.getElementById('ageRange').value;
+            const gender = document.querySelector('input[name="gender"]:checked');
+            const symptoms = document.getElementById('symptoms').value;
+            const duration = document.getElementById('duration').value;
+            const location = document.getElementById('location').value;
+
+            if (!gender) {
+                alert('Please select a gender');
+                return;
+            }
+
+            // Clear form
+            document.getElementById('reportForm').reset();
+
+            // Show success message
+            const resultDiv = document.getElementById('reportResult');
+            resultDiv.className = 'alert success';
+            resultDiv.textContent = '✓ Thank you for helping improve community health monitoring. Your report has been received.';
+
+            // Clear the alert after 6 seconds
+            setTimeout(() => {
+                resultDiv.className = 'alert';
+            }, 6000);
+
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
